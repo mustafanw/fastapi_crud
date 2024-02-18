@@ -72,3 +72,28 @@ class ListPostResponse(BaseModel):
     status: str
     results: int
     posts: List[PostResponse]
+
+
+class PlayerBaseSchema(BaseModel):
+    name: str
+    class Config:
+        orm_mode = True
+
+class CreatePlayerSchema(PlayerBaseSchema):
+    pass
+
+    
+class PlayerResponse(PlayerBaseSchema):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+class ListPlayerResponse(BaseModel):
+    status: str
+    results: int
+    players: List[PlayerResponse]
+
+class UpdatePlayerSchema(BaseModel):
+    name: Optional[str] = None
+    class Config:
+        orm_mode = True
