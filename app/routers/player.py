@@ -25,35 +25,35 @@ def create_player(player: schemas.CreatePlayerSchema, db: Session = Depends(get_
     db.refresh(new_player)
     return new_player
 
-@router.put('/{id}', response_model=schemas.PlayerResponse)
-def update_player(id: str, player: schemas.UpdatePlayerSchema, db: Session = Depends(get_db)):
-    player_query = db.query(models.Player).filter(models.Player.id == id)
+@router.put('/{jersey_number}', response_model=schemas.PlayerResponse)
+def update_player(jersey_number: int, player: schemas.UpdatePlayerSchema, db: Session = Depends(get_db)):
+    player_query = db.query(models.Player).filter(models.Player.jersey_number == jersey_number)
     updated_player = player_query.first()
 
     if not updated_player:
         raise HTTPException(status_code=status.HTTP_200_OK,
-                            detail=f'No player with this id: {id} found')
+                            detail=f'No player with this jersey_number: {jersey_number} found')
     player_query.update(player.dict(exclude_unset=True), synchronize_session=False)
     db.commit()
     return updated_player
 
 
-@router.get('/{id}', response_model=schemas.PlayerResponse)
-def get_player(id: str, db: Session = Depends(get_db)):
-    player = db.query(models.Player).filter(models.Player.id == id).first()
+@router.get('/{jersey_number}', response_model=schemas.PlayerResponse)
+def get_player(jersey_number: int, db: Session = Depends(get_db)):
+    player = db.query(models.Player).filter(models.Player.jersey_number == jersey_number).first()
     if not player:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"No player with this id: {id} found")
+                            detail=f"No player with this jersey_number: {jersey_number} found")
     return player
 
 
-@router.delete('/{id}')
-def delete_player(id: str, db: Session = Depends(get_db)):
-    player_query = db.query(models.Player).filter(models.Player.id == id)
+@router.delete('/{jersey_number}')
+def delete_player(jersey_number: int, db: Session = Depends(get_db)):
+    player_query = db.query(models.Player).filter(models.Player.jersey_number == jersey_number)
     player = player_query.first()
     if not player:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'No player with this id: {id} found')
+                            detail=f'No player with this jersey_number: {jersey_number} found')
 
     player_query.delete(synchronize_session=False)
     db.commit()

@@ -76,6 +76,8 @@ class ListPostResponse(BaseModel):
 
 class PlayerBaseSchema(BaseModel):
     name: str
+    jersey_name: str
+    jersey_number: int
     class Config:
         orm_mode = True
 
@@ -95,5 +97,75 @@ class ListPlayerResponse(BaseModel):
 
 class UpdatePlayerSchema(BaseModel):
     name: Optional[str] = None
+    class Config:
+        orm_mode = True
+
+
+# Income Schemas
+
+class IncomeBaseSchema(BaseModel):
+    name: Optional[str]
+    amount: int
+    paid_to: str
+    comment: str
+    # name_id: Optional[uuid.UUID] = None
+
+    class Config:
+        orm_mode = True
+
+class CreateIncomeSchema(IncomeBaseSchema):
+    pass
+
+    
+class IncomeResponse(IncomeBaseSchema):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    name_id: Optional[uuid.UUID] = None
+
+class ListIncomeResponse(BaseModel):
+    status: str
+    results: int
+    incomes: List[IncomeResponse]
+
+class UpdateIncomeSchema(BaseModel):
+    name: Optional[str] = None
+    amount: Optional[int] = None
+    paid_to: Optional[str] = None
+    amount: Optional[str] = None
+    class Config:
+        orm_mode = True
+
+
+# Expense Schemas
+
+class ExpenseBaseSchema(BaseModel):
+    expense_name: Optional[str]
+    amount: int
+    paid_by: str
+    comment: str
+
+    class Config:
+        orm_mode = True
+
+class CreateExpenseSchema(ExpenseBaseSchema):
+    pass
+
+    
+class ExpenseResponse(ExpenseBaseSchema):
+    id: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+
+class ListExpenseResponse(BaseModel):
+    status: str
+    results: int
+    expenses: List[ExpenseResponse]
+
+class UpdateExpenseSchema(BaseModel):
+    expense_name: Optional[str] = None
+    amount: Optional[int] = None
+    paid_by: Optional[str] = None
+    comment: Optional[str] = None
     class Config:
         orm_mode = True
