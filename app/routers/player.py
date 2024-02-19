@@ -1,9 +1,11 @@
+import os
 import uuid
 from .. import schemas, models
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status, APIRouter, Response
+from fastapi import Depends, HTTPException, status, APIRouter, Response, File, UploadFile
 from ..database import get_db
 from app.oauth2 import require_user
+import shutil
 
 router = APIRouter()
 
@@ -16,6 +18,13 @@ def get_players(db: Session = Depends(get_db), limit: int = 10, page: int = 1, s
         models.Player.name.contains(search)).limit(limit).offset(skip).all()
     return {'status': 'success', 'results': len(players), 'players': players}
 
+def save_photo(jersey_number: int, photo: UploadFile):
+    upload_folder = f"uploads/{jersey_number}"
+    os.makedirs(upload_folder, exist_ok=True)
+    file_path = os.path.join(upload_folder, photo.filename)
+
+    with open(file_path, "wb") as file:
+        shutil.copyfileobj(photo.file, file)
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.PlayerResponse)
 def create_player(player: schemas.CreatePlayerSchema, db: Session = Depends(get_db)):
@@ -23,6 +32,11 @@ def create_player(player: schemas.CreatePlayerSchema, db: Session = Depends(get_
     db.add(new_player)
     db.commit()
     db.refresh(new_player)
+
+    # Save the photo file
+#     if photo:
+#         save_photo(player.jersey_number, photo)
+
     return new_player
 
 @router.put('/{jersey_number}', response_model=schemas.PlayerResponse)
