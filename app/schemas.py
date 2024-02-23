@@ -2,8 +2,19 @@ from datetime import datetime
 from typing import List,  Optional
 import uuid
 from pydantic import BaseModel, EmailStr, constr
+from fastapi.responses  import JSONResponse
 
-
+class CustomJSONResponse(JSONResponse):
+    
+    def __init__(self,  *args, status_code=200, **kwargs):
+        # Add CORS headers
+        kwargs["headers"] = {
+            "Access-Control-Allow-Origin": "*",  # Adjust to your specific requirements
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        }
+        
+        super().__init__(*args, status_code=status_code, **kwargs)
 class UserBaseSchema(BaseModel):
     name: str
     email: EmailStr

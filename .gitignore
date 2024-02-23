@@ -1,3 +1,6 @@
 __pycache__
 .venv/
 frontend/
+lib/
+deployment_package.zip
+deployment_package
