@@ -1,0 +1,3 @@
+update_payload={'name': 'Abbas', 'jersey_name': 'Abbas', 'jersey_number': 9}
+for key, value in update_payload.items():
+    print(key, value)

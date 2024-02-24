@@ -93,7 +93,12 @@ class PlayerBaseSchema(BaseModel):
         orm_mode = True
 
 class CreatePlayerSchema(PlayerBaseSchema):
-    pass
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'jersey_name': self.jersey_name,
+            'jersey_number': self.jersey_number
+        }
 
     
 class PlayerResponse(PlayerBaseSchema):
